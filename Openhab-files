@@ -1,0 +1,25 @@
+//Rules- file
+var Timer doorbelltimer = null
+
+rule "Records when Doorbell was last activated"
+when
+    Item Doorbell changed to RING
+then
+    postUpdate(Doorbell_lastupdate, new DateTimeType())
+    logInfo("Doorbell", "Doorbell rang" )
+	if(Doorbell_automation.state==ON && doorbelltimer=== null)   //=== if 'null' is one of the arguments
+	{
+        WIFI_LEDSTRIP_1_scene4.sendCommand(ON)
+        doorbelltimer = createTimer(now.plusSeconds(5)) [|
+            WIFI_LEDSTRIP_1.sendCommand(0,0,0)
+            doorbelltimer = null
+        ]
+    }
+    Doorbell.sendCommand("OFF") // Doorbell is a String
+end
+
+
+//Items file
+String Doorbell "Doorbell [%s]" <frontdoor>  {mqtt="<[mosquitto:sensor/doorbell:state:default]"}
+DateTime Doorbell_lastupdate "Last update of Doorbell [%1$td-%1$tm-%1$tY %1$tR]" <time>
+Switch Doorbell_automation "Doorbell automation"  <zoom>
