@@ -23,3 +23,11 @@ end
 String Doorbell "Doorbell [%s]" <frontdoor>  {mqtt="<[mosquitto:sensor/doorbell:state:default]"}
 DateTime Doorbell_lastupdate "Last update of Doorbell [%1$td-%1$tm-%1$tY %1$tR]" <time>
 Switch Doorbell_automation "Doorbell automation"  <zoom>
+
+//Sitemap file
+Frame label="Doorbell"	
+{
+	Switch item=Doorbell_automation
+	Text item=Doorbell
+	Text item=Doorbell_lastupdate
+}
